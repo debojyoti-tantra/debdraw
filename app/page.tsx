@@ -5,50 +5,16 @@ import { SignedIn, SignedOut, useClerk, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ArrowRight, Github, Twitter, Briefcase } from "lucide-react";
+import Navbar from "../components/Navbar";
+import Footrer from "@/components/Footrer";
 
 export default function Home() {
   const { openSignIn, openSignUp } = useClerk()
 
   return (
     <main className="min-h-screen bg-white text-black dark:bg-black dark:text-white font-sans transition-colors duration-300">
-      {/* Header */}
-      <header className="flex items-center justify-between p-4 border-b border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-[#0d0d0d]">
-        <div className="flex items-center space-x-2">
-          <div className="w-6 h-6 bg-gradient-to-r from-red-500 via-black dark:via-white to-blue-500 rounded-sm" />
-          <span className="text-xl font-bold">
-            <Link href={`/`}>
-              debdraw
-            </Link>
-          </span>
-        </div>
-
-        <div className="space-x-2 text-sm flex items-center">
-          <ThemeToggle />
-          <SignedIn>
-            <Link href={`/dashboard`}>
-              <Button>
-                Dashboard
-              </Button>
-            </Link>
-            <UserButton />
-          </SignedIn>
-          <SignedOut>
-            <Button
-              variant="outline"
-              className="border-gray-500 dark:border-gray-400 hover:bg-gray-200 dark:hover:bg-gray-800"
-              onClick={() => openSignIn()}
-            >
-              Sign In
-            </Button>
-            <Button
-              className="bg-black text-white dark:bg-white dark:text-black font-semibold hover:bg-gray-900 dark:hover:bg-gray-200"
-              onClick={() => openSignUp()}
-            >
-              Sign Up
-            </Button>
-          </SignedOut>
-        </div>
-      </header>
+      <Navbar />
+      
 
       {/* Hero Section */}
       <section className="text-center py-24 px-4 relative">
@@ -109,29 +75,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* About Developer Section */}
-      <section className="py-10 px-4">
-        <h2 className="text-3xl font-bold text-center mb-4">About The Developer</h2>
-        <div className="flex justify-center space-x-6">
-          <Link href="https://debojyoti.vercel.app" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition">
-            <Briefcase className="mr-2" />
-            Portfolio
-          </Link>
-          <Link href="https://github.com/debojyoti-tantra" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition">
-            <Github className="mr-2" />
-            GitHub
-          </Link>
-          <Link href="https://x.com/debojyotitantra" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition">
-            <Twitter className="mr-2" />
-            Twitter
-          </Link>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="text-center py-8 border-t border-gray-300 dark:border-gray-700">
-        <p className="text-gray-700 dark:text-gray-300">&copy; 2025 debdraw. All rights reserved.</p>
-      </footer>
+      <Footrer />
     </main>
   );
 }
