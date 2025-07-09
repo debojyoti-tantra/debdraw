@@ -55,9 +55,7 @@ const Dashboard = () => {
   return (
     <div>
       Dashboard
-      <div className='bg-black text-white dark:bg-white dark:text-black font-semibold hover:bg-gray-900 dark:hover:bg-gray-200 w-fit px-2 py-1 rounded'>
-        <SignOutButton />
-      </div>
+      
     </div>
   )
 }
