@@ -1,4 +1,6 @@
 import { Button } from "@/components/ui/button"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -10,11 +12,12 @@ import {
 } from "@/components/ui/sidebar"
 import { api } from "@/convex/_generated/api"
 import { useUser } from "@clerk/nextjs"
-import { useConvex } from "convex/react"
+import { useConvex, useMutation } from "convex/react"
 import { ChevronDown, Users, Settings, LayoutGrid, FileIcon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 
 export interface TEAM {
   createdBy: String,
@@ -27,6 +30,7 @@ export function AppSidebar() {
   const convex = useConvex()
   const [teamList, setTeamList] = useState<TEAM[]>([])
   const [activeTeam, setActiveTeam] = useState<TEAM>()
+  const [fileInput, setFileInput] = useState("")
 
   useEffect(() => {
     if (user) {
@@ -39,6 +43,23 @@ export function AppSidebar() {
     const result = await convex.query(api.teams.getTeam, {email: user?.primaryEmailAddress?.emailAddress});
     setTeamList(result);
     setActiveTeam(result[0]);
+  }
+  
+
+  const createFile = useMutation(api.files.createFile)
+  const onFileCreate = async (fileName: string) => {
+    createFile({
+      fileName: fileInput,
+      teamId: activeTeam?._id as any,
+      createdBy: user?.primaryEmailAddress?.emailAddress,
+      archived: false,
+      whiteboard: ""
+    }).then(res => {
+      toast.success("File created successfully")
+      setFileInput("")
+    }),(e : any) => {
+      toast.error("Error creating file")
+    }
   }
 
   const menu = [
@@ -121,7 +142,36 @@ export function AppSidebar() {
         <SidebarGroup />
       </SidebarContent>
       <SidebarFooter className="mb-4">
-        <Button>New File <FileIcon /></Button>
+        <Dialog>
+          <DialogTrigger className="flex items-center justify-center gap-2 border border-gray-500 dark:border-gray-400 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 p-2 cursor-pointer w-full">
+            <p>New File</p> <FileIcon />
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                  Create a new file
+              </DialogTitle>
+              <DialogDescription>
+                  <Input
+                    value={fileInput}
+                    onChange={(e) => setFileInput(e.target.value)}
+                    placeholder="Enter file name"
+                  />
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="destructive">Close</Button>
+              </DialogClose>
+              <DialogClose>
+                <Button
+                  disabled={!fileInput || fileInput.trim() === ""}
+                  onClick={() => onFileCreate(fileInput)}
+                >Create</Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </SidebarFooter>
     </Sidebar>
   )
